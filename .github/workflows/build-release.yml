@@ -34,12 +34,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - flavor: armeabi
-            target_platform: android-arm
-            offset: 1
-          - flavor: x64
-            target_platform: android-x64
-            offset: 2
           - flavor: arm64
             target_platform: android-arm64
             offset: 3
