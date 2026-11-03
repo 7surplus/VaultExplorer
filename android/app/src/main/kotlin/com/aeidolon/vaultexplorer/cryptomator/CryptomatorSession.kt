@@ -171,6 +171,8 @@ class CryptomatorSession(
             // as soon as the mirror was rebuilt (next unlock/app restart),
             // since that's when its content is lazily re-pulled from the
             // (empty) real document. See MirroredSafDocumentOps.
+            // PATCH (stream-only): pull an existing file before in-place writes.
+            if (existing != null) vaultDocOps.ensureContentPulled(result)
             vaultDocOps.markWritePending(result)
             pendingBatchWrites[normalized] = result
             return result
@@ -596,8 +598,7 @@ class CryptomatorSession(
         // isn't the "pull everything just to show a folder" cost I was
         // worried about earlier -- it's exactly the single-file,
         // about-to-be-read case pulling is meant for.
-        vaultDocOps.ensureContentPulled(f.physicalFile)
-        val ciphertextSize = f.physicalFile.length()
+        val ciphertextSize = vaultDocOps.lengthForRead(f.physicalFile)
         VeLog.d("MirrorTrace") { "getFileSize: path=$virtualPath mirrorUri=${f.physicalFile.uri} ciphertextSize=$ciphertextSize" }
         val withoutHeader = ciphertextSize - contentCryptor.headerSize
         if (withoutHeader < 0) return 0L

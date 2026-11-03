@@ -2244,6 +2244,39 @@ class FileHandlingSettingsScreen extends ConsumerWidget {
                   SwitchListTile(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                     title: Text(
+                      'Stream instead of download (SAF / WebDAV / SFTP)',
+                      style: textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Text(
+                      state.settings.streamOnlySafReads
+                          ? 'Files from cloud and network vaults are read in '
+                              'pieces and decrypted on the fly. Nothing is '
+                              'copied to phone storage while playing or viewing. '
+                              'Editing an existing file still downloads it first.'
+                          : 'Files from cloud and network vaults are copied to '
+                              'phone storage first (small files fully, large '
+                              'files in the background) until the vault is locked.',
+                      style: textTheme.bodySmall?.copyWith(
+                        color: cs.onSurfaceVariant,
+                      ),
+                    ),
+                    value: state.settings.streamOnlySafReads,
+                    onChanged: (v) {
+                      ref
+                          .read(vaultFileIoApiProvider)
+                          .setStreamOnlyReads(v);
+                      ref
+                          .read(appSettingsControllerProvider.notifier)
+                          .updateSettings(
+                            (s) => s.copyWith(streamOnlySafReads: v),
+                          );
+                    },
+                  ),
+                  SwitchListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                    title: Text(
                       context.l10n.enableJsHtmlTitle,
                       style: textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,

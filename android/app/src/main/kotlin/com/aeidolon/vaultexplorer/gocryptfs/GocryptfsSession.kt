@@ -93,6 +93,10 @@ class GocryptfsSession(
             // leaving it as the empty placeholder created at file-creation
             // time; see the matching fix/comment in CryptomatorSession for
             // the full story.
+            // PATCH (stream-only): reads no longer pull, so an existing file
+            // must be downloaded before a partial in-place write touches its
+            // (sparse) mirror placeholder.
+            if (existing != null) safOps.ensureContentPulled(result)
             if (batchWriteActive) pendingBatchWritePaths.add(normalized)
             safOps.markWritePending(result)
             return result
@@ -407,8 +411,7 @@ class GocryptfsSession(
         val normalized = normalize(virtualPath)
         val node = tree.resolve(normalized) ?: return -1L
         val f = node as? GocryptfsNode.VFile ?: return -1L
-        safOps.ensureContentPulled(f.physicalFile)
-        val ciphertextLen = f.physicalFile.length()
+        val ciphertextLen = safOps.lengthForRead(f.physicalFile)
         return contentCryptor.cleartextSize(ciphertextLen)
     }
 

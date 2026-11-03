@@ -117,6 +117,18 @@ class MirroredSafDocumentOps(
         if (!sync.hasContent(realFile)) sync.pullFileIfMissing(realFile)
     }
 
+    override fun lengthForRead(file: DocumentFile): Long {
+        // Option off: original behaviour (full pull first, then local size).
+        if (!StreamOnlyReads.isEnabled(context)) {
+            ensureContentPulled(file)
+            return file.length()
+        }
+        val realFile = try { realDocFor(file) } catch (_: SafIOException) { return file.length() }
+        if (sync.hasLocalContent(realFile)) return file.length()
+        val realLen = try { realFile.length() } catch (_: Exception) { 0L }
+        return if (realLen > 0L) realLen else file.length()
+    }
+
     override fun resolveForRead(
         file: DocumentFile,
         onBackgroundPullPhase: ((MirrorPullEvents.Phase) -> Unit)?,

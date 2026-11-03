@@ -200,6 +200,7 @@ private object ChannelMethods {
     const val END_BATCH_DELETE          = "endBatchDelete"
     const val SET_SECURE_SCREEN         = "setSecureScreen"
     const val SET_DEBUG_LOGGING         = "setDebugLogging"
+    const val SET_STREAM_ONLY_READS     = "setStreamOnlyReads"
     const val SET_RECENTS_SNAPSHOT_BLOCKED = "setRecentsSnapshotBlocked"
     const val NOTIFY_RESUMED_FRAME_PAINTED = "notifyResumedFramePainted"
     const val SET_SENSITIVE_CLIPBOARD_TEXT = "setSensitiveClipboardText"
@@ -1104,6 +1105,12 @@ open class MainActivity : FlutterFragmentActivity() {
             when (call.method) {
                 ChannelMethods.SET_DEBUG_LOGGING -> {
                     VeLog.enabled = call.argument<Boolean>("enabled") == true
+                    result.success(null)
+                }
+                ChannelMethods.SET_STREAM_ONLY_READS -> {
+                    com.aeidolon.vaultexplorer.saf.StreamOnlyReads.set(
+                        this, call.argument<Boolean>("enabled") != false
+                    )
                     result.success(null)
                 }
                 ChannelMethods.SET_SECURE_SCREEN -> systemHandlers.handleSetSecureScreen(call, result)

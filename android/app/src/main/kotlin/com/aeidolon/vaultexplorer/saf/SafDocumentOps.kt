@@ -57,6 +57,14 @@ interface VaultDocumentOps {
     fun ensureContentPulled(file: DocumentFile) {}
 
     /**
+     * Ciphertext length of [file] for a reader that is about to stream it,
+     * WITHOUT downloading it. The plain implementation just asks the file;
+     * the mirrored one asks the real SAF document unless the mirror already
+     * holds authoritative content (synced or pending local write).
+     */
+    fun lengthForRead(file: DocumentFile): Long = file.length()
+
+    /**
      * Mirror-only: resolves [file] for a raw-I/O read, returning the
      * [DocumentFile] the caller should actually open for byte-level
      * access. For a mirrored vault with a large, not-yet-cached file

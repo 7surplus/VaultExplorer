@@ -1690,6 +1690,20 @@ class VaultFileIoApi {
   /// read/write path selection, WRITE_BACK_STREAM profiling, etc.) only
   /// fire when explicitly enabled. Call this whenever the toggle changes
   /// and once at startup -- see VaultExplorerApp._resolveMode.
+  /// Mirrors the "Stream instead of download" file-handling toggle to the
+  /// native side (which also persists it, so engine-only processes such as
+  /// the documents provider see the same value). Call on toggle change, at
+  /// startup and after a settings import.
+  Future<void> setStreamOnlyReads(bool enabled) async {
+    try {
+      await _channel.invokeMethod(ChannelMethods.setStreamOnlyReads, {
+        'enabled': enabled,
+      });
+    } catch (e) {
+      logSwallowed('setStreamOnlyReads', e, expected: true);
+    }
+  }
+
   Future<void> setDebugLogging(bool enabled) async {
     try {
       await _channel.invokeMethod(ChannelMethods.setDebugLogging, {

@@ -175,6 +175,10 @@ class AppSettings {
   PlaylistScrollMode playlistScrollMode;
   String? languageCode;
   bool debugLoggingEnabled;
+  // When true, files in SAF-mirrored vaults (WebDAV/SFTP/cloud via a
+  // document provider) are streamed on demand instead of being downloaded
+  // to app storage first. Mirrored natively by StreamOnlyReads.
+  bool streamOnlySafReads;
   DeleteAfterImportMode deleteAfterImportMode;
   AudioRecordingQuality audioRecordingQuality;
   bool videoMuted;
@@ -228,6 +232,7 @@ class AppSettings {
     this.playlistScrollMode = PlaylistScrollMode.horizontal,
     this.languageCode,
     this.debugLoggingEnabled = false,
+    this.streamOnlySafReads = true,
     this.deleteAfterImportMode = DeleteAfterImportMode.ask,
     this.audioRecordingQuality = AudioRecordingQuality.defaultQuality,
     this.videoMuted = false,
@@ -361,6 +366,7 @@ class AppSettings {
     String? languageCode,
     bool clearLanguageCode = false,
     bool? debugLoggingEnabled,
+    bool? streamOnlySafReads,
     DeleteAfterImportMode? deleteAfterImportMode,
     AudioRecordingQuality? audioRecordingQuality,
     bool? videoMuted,
@@ -430,6 +436,7 @@ class AppSettings {
           ? null
           : (languageCode ?? this.languageCode),
       debugLoggingEnabled: debugLoggingEnabled ?? this.debugLoggingEnabled,
+      streamOnlySafReads: streamOnlySafReads ?? this.streamOnlySafReads,
       deleteAfterImportMode:
           deleteAfterImportMode ?? this.deleteAfterImportMode,
       audioRecordingQuality:
@@ -503,6 +510,7 @@ class AppSettings {
     'htmlEnableJavaScript': htmlEnableJavaScript,
     'languageCode': languageCode,
     'debugLoggingEnabled': debugLoggingEnabled,
+    'streamOnlySafReads': streamOnlySafReads,
     'deleteAfterImportMode': deleteAfterImportMode.toJson(),
     'audioRecordingQuality': audioRecordingQuality.toJson(),
     'videoMuted': videoMuted,
@@ -575,6 +583,7 @@ class AppSettings {
     languageCode: other.languageCode,
     clearLanguageCode: other.languageCode == null,
     debugLoggingEnabled: other.debugLoggingEnabled,
+    streamOnlySafReads: other.streamOnlySafReads,
     deleteAfterImportMode: other.deleteAfterImportMode,
     audioRecordingQuality: other.audioRecordingQuality,
     videoMuted: other.videoMuted,
@@ -679,6 +688,7 @@ class AppSettings {
     ),
     languageCode: j['languageCode'] as String?,
     debugLoggingEnabled: j['debugLoggingEnabled'] as bool? ?? false,
+    streamOnlySafReads: j['streamOnlySafReads'] as bool? ?? true,
     deleteAfterImportMode: DeleteAfterImportMode.fromJson(
       j['deleteAfterImportMode'] as String?,
     ),

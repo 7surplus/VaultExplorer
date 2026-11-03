@@ -177,6 +177,7 @@ abstract final class ChannelMethods {
   static const clearSensitiveClipboardText = 'clearSensitiveClipboardText';
   static const setKeepScreenOn = 'setKeepScreenOn';
   static const setDebugLogging = 'setDebugLogging';
+  static const setStreamOnlyReads = 'setStreamOnlyReads';
   static const launchUrl = 'launchUrl';
   static const getAppVersion = 'getAppVersion';
   static const getAndroidSdkInt = 'getAndroidSdkInt';

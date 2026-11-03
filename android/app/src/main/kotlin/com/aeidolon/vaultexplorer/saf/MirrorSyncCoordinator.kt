@@ -290,6 +290,13 @@ class MirrorSyncCoordinator(
 
     fun hasContent(realDoc: DocumentFile): Boolean = registry.hasContent(realDoc.uri.toString())
 
+    /** True when the mirror file holds the authoritative bytes: a completed
+     *  pull, or a local write that has not been pushed yet. */
+    fun hasLocalContent(realDoc: DocumentFile): Boolean {
+        val key = realDoc.uri.toString()
+        return registry.hasContent(key) || registry.hasPendingLocalWrite(key)
+    }
+
     fun pullFileIfMissing(realDoc: DocumentFile): File {
         val key = realDoc.uri.toString()
         val mirrored = registry.mirrorFor(key)
@@ -454,6 +461,10 @@ class MirrorSyncCoordinator(
     ): Boolean {
         val key = realDoc.uri.toString()
         if (registry.hasContent(key)) return true
+        if (StreamOnlyReads.isEnabled(context)) {
+            // Unpushed local write: the mirror is newer than the real doc.
+            return registry.hasPendingLocalWrite(key)
+        }
         val size = realDoc.length()
         if (size < LARGE_FILE_STREAM_THRESHOLD_BYTES) {
             return try {

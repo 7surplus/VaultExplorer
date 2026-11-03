@@ -203,6 +203,11 @@ class _DisguiseModeGateState extends ConsumerState<_DisguiseModeGate> {
           .read(vaultFileIoApiProvider)
           .setDebugLogging(settings.debugLoggingEnabled),
     );
+    unawaited(
+      ref
+          .read(vaultFileIoApiProvider)
+          .setStreamOnlyReads(settings.streamOnlySafReads),
+    );
     if (mode == DisguiseMode.decoy) {
       await secureScreenPolicy.disableForDecoy();
     } else {

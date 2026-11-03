@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:vaultexplorer/app/vault_explorer_app.dart';
+import 'package:vaultexplorer/core/providers/vault_engine_providers.dart';
 import 'package:vaultexplorer/core/theme/app_skin_settings_provider.dart';
 import 'package:vaultexplorer/core/utils/ve_log.dart';
 import 'package:vaultexplorer/data/models/file_manager_toolbar_config.dart';
@@ -36,6 +37,9 @@ Future<void> refreshLiveSettings(
   ref.invalidate(textEditorAppearanceProvider);
 
   VeLog.enabled = settings.debugLoggingEnabled;
+  await ref
+      .read(vaultFileIoApiProvider)
+      .setStreamOnlyReads(settings.streamOnlySafReads);
   appThemeModeNotifier.value = settings.themeMode;
   appUseDynamicColorNotifier.value = settings.useDynamicColor;
   appLocaleNotifier.value = settings.languageCode != null
